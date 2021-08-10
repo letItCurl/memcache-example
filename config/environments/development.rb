@@ -27,7 +27,15 @@ Rails.application.configure do
   else
     config.action_controller.perform_caching = false
 
-    config.cache_store = :null_store
+    config.cache_store = :mem_cache_store,
+    (ENV["MEMCACHIER_SERVERS"] || "").split(","),
+    {:username => ENV["MEMCACHIER_USERNAME"],
+     :password => ENV["MEMCACHIER_PASSWORD"],
+     :failover => true,
+     :socket_timeout => 1.5,
+     :socket_failure_delay => 0.2,
+     :down_retry_delay => 60
+    }
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
